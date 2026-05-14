@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="IGNIS — The world's most advanced luxury infrared sauna. Engineered for peak recovery, transformation, and sacred heat.">
+<title>IGNIS — Luxury Infrared Sauna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@200;300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   EMBER RISE THEME — Custom Token System
+   ============================================================ */
+:root {
+  --bg-0:        #050503;
+  --bg-1:        #0d0c09;
+  --bg-2:        #151310;
+  --bg-3:        #1c1a15;
+  --glass:       rgba(255,255,255,0.03);
+  --glass-warm:  rgba(200,147,58,0.06);
+
+  --gold:        #c8933a;
+  --gold-light:  #e8b86d;
+  --gold-dim:    #8a6428;
+  --heat:        #ff6b35;
+  --heat-dim:    rgba(255,107,53,0.15);
+
+  --text-1:      #f5f0eb;
+  --text-2:      #9b9089;
+  --text-3:      #5a524e;
+
+  --border:      rgba(200,147,58,0.12);
+  --border-2:    rgba(255,255,255,0.06);
+
+  --serif:       'Playfair Display', Georgia, serif;
+  --sans:        'Inter', system-ui, sans-serif;
+  --mono:        'DM Mono', monospace;
+
+  --ease:        cubic-bezier(0.16,1,0.3,1);
+  --ease-in:     cubic-bezier(0.4,0,1,1);
+  --pad:         clamp(80px,10vw,140px);
+  --w:           min(1200px,90vw);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg-0);
+  color: var(--text-1);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { cursor: none; border: none; background: none; font-family: inherit; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor-dot {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: width .2s var(--ease), height .2s var(--ease), background .2s;
+  will-change: transform;
+}
+#cursor-ring {
+  position: fixed; top: 0; left: 0; z-index: 9998;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(200,147,58,0.5);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: transform .12s var(--ease), width .3s var(--ease), height .3s var(--ease), border-color .3s;
+  will-change: transform;
+}
+body:hover #cursor-dot { opacity: 1; }
+.cursor-grow #cursor-dot  { width: 12px; height: 12px; background: var(--gold-light); }
+.cursor-grow #cursor-ring { width: 56px; height: 56px; border-color: var(--gold); }
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9990;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: .4;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+.label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 400;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.h-display {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+}
+.h-section {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -.015em;
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .9s var(--ease), transform .9s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left  { opacity: 0; transform: translateX(-40px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.reveal-right { opacity: 0; transform: translateX(40px);  transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.reveal-left.visible, .reveal-right.visible { opacity: 1; transform: translateX(0); }
+.delay-1 { transition-delay: .1s; }
+.delay-2 { transition-delay: .2s; }
+.delay-3 { transition-delay: .3s; }
+.delay-4 { transition-delay: .4s; }
+.delay-5 { transition-delay: .5s; }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 28px clamp(24px,4vw,60px);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .5s var(--ease), padding .5s var(--ease), backdrop-filter .5s;
+}
+#nav.scrolled {
+  background: rgba(5,5,3,0.88);
+  backdrop-filter: blur(24px) saturate(1.4);
+  padding-top: 18px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--text-1);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: .8rem;
+  font-weight: 400;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  transition: color .3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1px; background: var(--gold);
+  transition: width .4s var(--ease);
+}
+.nav-links a:hover { color: var(--text-1); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bg-0);
+  background: var(--gold);
+  padding: 11px 26px;
+  border-radius: 2px;
+  transition: background .3s, transform .3s var(--ease), box-shadow .3s;
+}
+.nav-cta:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(200,147,58,0.3);
+}
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  width: 28px; padding: 4px 0;
+}
+.nav-hamburger span {
+  display: block; width: 100%; height: 1px;
+  background: var(--text-1);
+  transition: transform .4s var(--ease), opacity .3s;
+}
+
+/* Mobile nav */
+#mobile-nav {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--bg-0);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 32px;
+  transform: translateY(-100%);
+  transition: transform .6s var(--ease);
+}
+#mobile-nav.open { transform: translateY(0); }
+#mobile-nav a {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem,6vw,3rem);
+  color: var(--text-1);
+  font-weight: 400;
+  transition: color .3s;
+}
+#mobile-nav a:hover { color: var(--gold); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero {
+  position: relative;
+  height: 100vh; min-height: 700px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+#hero-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero-gradient {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 80%, rgba(255,107,53,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(200,147,58,0.06) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(5,5,3,0.3) 0%, rgba(5,5,3,0.5) 60%, rgba(5,5,3,0.95) 100%);
+  animation: heroGradientPulse 8s ease-in-out infinite alternate;
+}
+@keyframes heroGradientPulse {
+  0%   { opacity: .85; }
+  100% { opacity: 1; }
+}
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 24px;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  margin-bottom: 32px;
+  opacity: 0; animation: fadeUp .9s .3s var(--ease) forwards;
+}
+.hero-eyebrow-line {
+  width: 40px; height: 1px; background: var(--gold); opacity: .6;
+}
+.hero-title {
+  font-size: clamp(3.2rem, 8vw, 7.5rem);
+  margin-bottom: 28px;
+  opacity: 0; animation: fadeUp 1s .5s var(--ease) forwards;
+}
+.hero-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--heat) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(.95rem, 1.6vw, 1.15rem);
+  color: var(--text-2);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  font-weight: 300;
+  line-height: 1.75;
+  opacity: 0; animation: fadeUp 1s .7s var(--ease) forwards;
+}
+.hero-actions {
+  display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 1s .9s var(--ease) forwards;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: .82rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--bg-0);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  padding: 16px 36px; border-radius: 2px;
+  transition: transform .3s var(--ease), box-shadow .3s, filter .3s;
+  position: relative; overflow: hidden;
+}
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  opacity: 0; transition: opacity .3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 48px rgba(200,147,58,0.4); }
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary span { position: relative; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: .82rem; font-weight: 400; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-1);
+  border: 1px solid var(--border-2);
+  padding: 15px 32px; border-radius: 2px;
+  transition: border-color .3s, background .3s, transform .3s var(--ease);
+}
+.btn-secondary:hover {
+  border-color: var(--border);
+  background: var(--glass-warm);
+  transform: translateY(-2px);
+}
+.btn-icon { font-size: 1rem; }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0; animation: fadeUp 1s 1.2s var(--ease) forwards;
+}
+.hero-scroll-label { font-family: var(--mono); font-size: .65rem; letter-spacing: .2em; color: var(--text-3); }
+.hero-scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: .3; transform: scaleY(1); }
+  50%      { opacity: 1;  transform: scaleY(1.1); }
+}
+
+/* Parallax layers */
+.hero-parallax-1, .hero-parallax-2 {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.glow-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 12s ease-in-out infinite alternate;
+}
+.orb-1 {
+  width: 500px; height: 300px;
+  background: radial-gradient(ellipse, rgba(255,107,53,0.15) 0%, transparent 70%);
+  top: 20%; left: 10%;
+  animation-duration: 11s;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse, rgba(200,147,58,0.12) 0%, transparent 70%);
+  top: 30%; right: 5%;
+  animation-duration: 14s; animation-delay: -4s;
+}
+.orb-3 {
+  width: 600px; height: 200px;
+  background: radial-gradient(ellipse, rgba(255,107,53,0.08) 0%, transparent 70%);
+  bottom: 10%; left: 20%;
+  animation-duration: 9s; animation-delay: -7s;
+}
+@keyframes orbFloat {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(30px,-20px) scale(1.08); }
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(30px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ============================================================
+   TICKER / MARQUEE
+   ============================================================ */
+.ticker-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+  padding: 14px 0;
+}
+.ticker-track {
+  display: flex; align-items: center;
+  animation: ticker 30s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 24px;
+  padding: 0 40px;
+  font-family: var(--mono); font-size: .72rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+.stats-bar {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stats-inner {
+  width: var(--w); margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 2px;
+}
+.stat-item {
+  padding: 40px 32px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+  position: relative;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0; transition: opacity .5s;
+}
+.stat-item:hover::before { opacity: 1; }
+.stat-num {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem,4vw,3.5rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-1);
+  margin-bottom: 10px;
+}
+.stat-num .stat-count { display: inline-block; }
+.stat-suffix { color: var(--gold); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ============================================================
+   SECTION BASE
+   ============================================================ */
+section { position: relative; overflow: hidden; }
+.section-inner { width: var(--w); margin: 0 auto; }
+.section-header {
+  text-align: center;
+  margin-bottom: clamp(48px,6vw,80px);
+}
+.section-header .label { display: block; margin-bottom: 20px; }
+.section-title {
+  font-size: clamp(2.2rem,4.5vw,3.8rem);
+  margin-bottom: 20px;
+}
+.section-sub {
+  font-size: clamp(.9rem,1.4vw,1.05rem);
+  color: var(--text-2);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   BENEFITS
+   ============================================================ */
+#benefits {
+  padding: var(--pad) 0;
+  background: var(--bg-1);
+}
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.benefit-card {
+  background: var(--bg-1);
+  padding: 48px 36px;
+  position: relative;
+  transition: background .4s;
+}
+.benefit-card::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--heat));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .5s var(--ease);
+}
+.benefit-card:hover { background: var(--bg-2); }
+.benefit-card:hover::after { transform: scaleX(1); }
+.benefit-icon {
+  width: 48px; height: 48px; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.benefit-icon svg { width: 100%; height: 100%; }
+.benefit-title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 14px;
+  color: var(--text-1);
+}
+.benefit-desc {
+  font-size: .88rem;
+  color: var(--text-2);
+  line-height: 1.8;
+}
+.benefit-num {
+  position: absolute; top: 28px; right: 28px;
+  font-family: var(--mono); font-size: .65rem;
+  color: var(--text-3); letter-spacing: .12em;
+}
+
+/* ============================================================
+   PRODUCT SHOWCASE
+   ============================================================ */
+#product {
+  padding: var(--pad) 0;
+  background: var(--bg-0);
+}
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px,6vw,100px);
+  align-items: center;
+}
+.product-visual {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.product-visual-inner {
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(ellipse 70% 50% at 40% 60%, rgba(255,107,53,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 70% 30%, rgba(200,147,58,0.14) 0%, transparent 60%),
+    linear-gradient(145deg, #1a1208 0%, #0d0a05 40%, #1c140a 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+/* CSS Sauna Illustration */
+.sauna-shape {
+  position: relative; width: 72%; max-width: 320px;
+}
+.sauna-body {
+  width: 100%;
+  padding-bottom: 70%;
+  background: linear-gradient(145deg, #2a1e0e 0%, #1a1208 40%, #251a0a 100%);
+  border-radius: 3px 3px 0 0;
+  position: relative;
+  box-shadow:
+    inset 3px 0 12px rgba(255,107,53,0.08),
+    inset -2px 0 8px rgba(0,0,0,0.4),
+    0 0 60px rgba(255,107,53,0.12);
+}
+.sauna-roof {
+  width: 108%; margin-left: -4%;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 40px solid #1e1508;
+  position: relative;
+  filter: drop-shadow(0 -4px 20px rgba(200,147,58,0.1));
+}
+.sauna-door {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 28%; height: 55%;
+  background: linear-gradient(180deg, #0a0805 0%, rgba(255,107,53,0.3) 100%);
+  border: 1px solid rgba(200,147,58,0.2);
+  border-radius: 1px 1px 0 0;
+}
+.sauna-door-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(255,107,53,0.6) 0%, transparent 70%);
+  animation: doorGlow 3s ease-in-out infinite alternate;
+}
+@keyframes doorGlow {
+  0%   { opacity: .4; }
+  100% { opacity: 1; }
+}
+.sauna-window {
+  position: absolute;
+  top: 22%; right: 14%;
+  width: 22%; height: 28%;
+  border: 1px solid rgba(200,147,58,0.25);
+  background: linear-gradient(135deg, rgba(255,107,53,0.2) 0%, rgba(200,147,58,0.1) 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 20px rgba(255,107,53,0.2), inset 0 0 8px rgba(255,107,53,0.1);
+  animation: windowGlow 4s ease-in-out infinite alternate;
+}
+@keyframes windowGlow {
+  0%   { box-shadow: 0 0 12px rgba(255,107,53,0.15), inset 0 0 6px rgba(255,107,53,0.08); }
+  100% { box-shadow: 0 0 30px rgba(255,107,53,0.3), inset 0 0 12px rgba(255,107,53,0.18); }
+}
+.sauna-base {
+  width: 100%; height: 8px;
+  background: linear-gradient(90deg, #100d06 0%, #1e170a 50%, #100d06 100%);
+}
+.product-visual-badge {
+  position: absolute; top: 24px; right: 24px;
+  background: var(--glass-warm);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  padding: 12px 18px; border-radius: 2px;
+}
+.product-visual-badge .label { font-size: .65rem; margin-bottom: 4px; }
+.product-visual-badge-val {
+  font-family: var(--serif); font-size: 1.1rem; color: var(--text-1);
+}
+.product-heat-line {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--heat), var(--gold), transparent);
+  animation: heatLine 4s ease-in-out infinite;
+}
+@keyframes heatLine {
+  0%,100% { opacity: .4; transform: scaleX(.8); }
+  50%      { opacity: 1;  transform: scaleX(1); }
+}
+
+.product-info {}
+.product-name {
+  font-size: clamp(2rem,3.5vw,3rem);
+  margin-bottom: 8px;
+}
+.product-tagline {
+  font-family: var(--serif); font-style: italic;
+  font-size: 1.05rem; color: var(--gold);
+  margin-bottom: 28px;
+}
+.product-desc {
+  font-size: .95rem; color: var(--text-2);
+  line-height: 1.9; margin-bottom: 40px;
+}
+.product-specs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 44px;
+}
+.spec-item {
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--glass);
+  transition: border-color .3s, background .3s;
+}
+.spec-item:hover {
+  border-color: rgba(200,147,58,0.3);
+  background: var(--glass-warm);
+}
+.spec-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .15em; color: var(--text-3); text-transform: uppercase; margin-bottom: 6px; }
+.spec-val { font-size: .95rem; color: var(--text-1); font-weight: 400; }
+.product-price-row {
+  display: flex; align-items: center; gap: 24px;
+  margin-bottom: 28px;
+}
+.product-price {
+  font-family: var(--serif); font-size: 2.4rem;
+  color: var(--text-1);
+}
+.product-price-note { font-size: .8rem; color: var(--text-3); }
+.product-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+#features {
+  padding: var(--pad) 0;
+  background: var(--bg-1);
+}
+.features-list {
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.feature-row {
+  display: grid; grid-template-columns: 80px 1fr 1fr;
+  align-items: center; gap: 0;
+  background: var(--bg-1);
+  transition: background .3s;
+  cursor: default;
+}
+.feature-row:hover { background: var(--bg-2); }
+.feature-row-num {
+  padding: 36px 32px;
+  font-family: var(--mono); font-size: .65rem;
+  color: var(--text-3); letter-spacing: .12em;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.feature-row-content {
+  padding: 36px 40px;
+  border-right: 1px solid var(--border);
+}
+.feature-row-title {
+  font-family: var(--serif); font-size: 1.25rem;
+  color: var(--text-1); margin-bottom: 8px;
+}
+.feature-row-desc {
+  font-size: .85rem; color: var(--text-2); line-height: 1.7;
+}
+.feature-row-meta {
+  padding: 36px 40px;
+  display: flex; align-items: center; gap: 16px;
+}
+.feature-tag {
+  font-family: var(--mono); font-size: .62rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold); background: rgba(200,147,58,0.08);
+  border: 1px solid var(--border);
+  padding: 5px 12px; border-radius: 1px;
+}
+
+/* ============================================================
+   SCIENCE / RECOVERY
+   ============================================================ */
+#science {
+  padding: var(--pad) 0;
+  background: var(--bg-0);
+}
+.science-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(48px,6vw,100px); align-items: start;
+}
+.science-left {}
+.science-data-points {
+  display: flex; flex-direction: column; gap: 2px;
+  margin-top: 48px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.data-point {
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-1);
+  transition: background .3s;
+}
+.data-point:hover { background: var(--bg-2); }
+.data-point-bar-wrap {
+  width: 140px; height: 100%;
+  padding: 24px 24px;
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.data-point-bar {
+  height: 3px; background: var(--border-2);
+  flex: 1; border-radius: 2px; overflow: hidden;
+}
+.data-point-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--heat));
+  border-radius: 2px;
+  width: 0; transition: width 1.2s var(--ease);
+}
+.data-point.visible .data-point-bar-fill { width: var(--pct); }
+.data-point-info { padding: 24px 28px; }
+.data-point-val {
+  font-family: var(--serif); font-size: 1.8rem;
+  color: var(--text-1); line-height: 1;
+  margin-bottom: 4px;
+}
+.data-point-val .unit { font-size: .8rem; color: var(--gold); margin-left: 4px; }
+.data-point-desc { font-size: .8rem; color: var(--text-3); }
+
+.science-right {}
+.science-claim {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(1.4rem,2.5vw,2rem);
+  line-height: 1.5; color: var(--text-1);
+  border-left: 2px solid var(--gold);
+  padding-left: 28px; margin-bottom: 40px;
+}
+.science-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.science-card {
+  padding: 28px 24px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: border-color .3s, transform .3s var(--ease), box-shadow .3s;
+}
+.science-card:hover {
+  border-color: rgba(200,147,58,0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+.science-card-icon { font-size: 1.4rem; margin-bottom: 14px; }
+.science-card-title { font-size: .92rem; font-weight: 500; margin-bottom: 8px; }
+.science-card-text { font-size: .8rem; color: var(--text-2); line-height: 1.7; }
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+#how {
+  padding: var(--pad) 0;
+  background: var(--bg-1);
+}
+.how-steps {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.how-connector {
+  position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold), var(--gold-dim), transparent);
+  opacity: .3; pointer-events: none;
+  display: none; /* shown via JS after layout */
+}
+.how-step {
+  background: var(--bg-1);
+  padding: 56px 44px;
+  text-align: center;
+  position: relative;
+  transition: background .4s;
+}
+.how-step:hover { background: var(--bg-2); }
+.how-step-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 28px;
+  font-family: var(--mono); font-size: .72rem;
+  letter-spacing: .1em; color: var(--gold);
+  background: var(--glass-warm);
+  transition: border-color .4s, box-shadow .4s;
+}
+.how-step:hover .how-step-num {
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(200,147,58,0.2);
+}
+.how-step-title {
+  font-family: var(--serif); font-size: 1.2rem;
+  margin-bottom: 14px;
+}
+.how-step-desc {
+  font-size: .85rem; color: var(--text-2); line-height: 1.8;
+}
+
+/* ============================================================
+   LIFESTYLE / TRANSFORMATION
+   ============================================================ */
+#lifestyle {
+  padding: var(--pad) 0;
+  background: var(--bg-0);
+}
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+.lifestyle-cell {
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+  min-height: 300px;
+}
+.lifestyle-cell-bg {
+  width: 100%; height: 100%;
+  position: absolute; inset: 0;
+}
+.lc-1 .lifestyle-cell-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 50%, rgba(255,107,53,0.22) 0%, transparent 60%),
+    linear-gradient(135deg, #1a1005 0%, #0d0c09 100%);
+}
+.lc-2 .lifestyle-cell-bg {
+  background:
+    radial-gradient(ellipse 70% 70% at 70% 40%, rgba(200,147,58,0.2) 0%, transparent 60%),
+    linear-gradient(225deg, #150f05 0%, #0a0908 100%);
+}
+.lc-3 .lifestyle-cell-bg {
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 60%, rgba(255,107,53,0.15) 0%, transparent 60%),
+    linear-gradient(180deg, #0f0e08 0%, #080705 100%);
+  grid-column: 1 / 3;
+}
+.lifestyle-cell-content {
+  position: relative; z-index: 1;
+  padding: clamp(28px,4vw,52px);
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.lifestyle-cell-tag { margin-bottom: 14px; }
+.lifestyle-cell-title {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem,2.5vw,2.2rem);
+  line-height: 1.2; margin-bottom: 12px;
+}
+.lifestyle-cell-text {
+  font-size: .88rem; color: var(--text-2); line-height: 1.75; max-width: 400px;
+}
+.lifestyle-border {
+  position: absolute; inset: 0; border: 1px solid var(--border);
+  border-radius: 3px; pointer-events: none;
+  transition: border-color .4s;
+}
+.lifestyle-cell:hover .lifestyle-border { border-color: rgba(200,147,58,0.25); }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+#testimonials {
+  padding: var(--pad) 0;
+  background: var(--bg-1);
+}
+.testimonials-track-wrap {
+  overflow: hidden; margin: 0 -20px;
+}
+.testimonials-track {
+  display: flex; gap: 20px;
+  padding: 0 20px;
+  transition: transform .6s var(--ease);
+}
+.testimonial-card {
+  flex: 0 0 calc(33.33% - 14px);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 40px 36px;
+  position: relative;
+  transition: border-color .3s, transform .4s var(--ease), box-shadow .4s;
+}
+.testimonial-card:hover {
+  border-color: rgba(200,147,58,0.25);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.testimonial-quote {
+  font-size: 3rem; line-height: .8;
+  color: var(--gold); font-family: var(--serif);
+  margin-bottom: 20px; opacity: .5;
+}
+.testimonial-text {
+  font-size: .92rem; color: var(--text-1);
+  line-height: 1.8; margin-bottom: 28px;
+  font-style: italic; font-family: var(--serif);
+}
+.testimonial-footer {
+  display: flex; align-items: center; gap: 14px;
+}
+.testimonial-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dim), var(--heat));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .7rem; color: var(--bg-0);
+  font-weight: 500;
+}
+.testimonial-name { font-size: .85rem; font-weight: 500; }
+.testimonial-role { font-size: .75rem; color: var(--text-3); }
+.testimonial-stars {
+  margin-left: auto;
+  color: var(--gold); font-size: .85rem; letter-spacing: 2px;
+}
+.testimonials-nav {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center; margin-top: 40px;
+}
+.t-nav-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  transition: border-color .3s, background .3s, color .3s;
+  font-size: 1rem;
+}
+.t-nav-btn:hover {
+  border-color: var(--gold);
+  background: var(--glass-warm);
+  color: var(--gold);
+}
+.t-nav-dots { display: flex; gap: 8px; }
+.t-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text-3);
+  transition: background .3s, transform .3s;
+}
+.t-dot.active { background: var(--gold); transform: scale(1.4); }
+
+/* ============================================================
+   PURCHASE / SHOP
+   ============================================================ */
+#shop {
+  padding: var(--pad) 0;
+  background: var(--bg-0);
+}
+.shop-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 16px; margin-top: 12px;
+}
+.shop-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  transition: transform .4s var(--ease), box-shadow .4s, border-color .4s;
+}
+.shop-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  border-color: rgba(200,147,58,0.3);
+}
+.shop-card.featured {
+  border-color: var(--gold);
+}
+.shop-card-badge {
+  position: absolute; top: 20px; right: 20px;
+  font-family: var(--mono); font-size: .62rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  background: var(--gold);
+  color: var(--bg-0); padding: 5px 12px;
+  border-radius: 1px;
+}
+.shop-card-visual {
+  height: 220px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.sc-visual-1 {
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(200,147,58,0.18) 0%, transparent 65%),
+    linear-gradient(180deg, #120e05 0%, #0d0c09 100%);
+}
+.sc-visual-2 {
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(255,107,53,0.22) 0%, transparent 65%),
+    linear-gradient(180deg, #150a04 0%, #0d0c09 100%);
+}
+.sc-visual-3 {
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(200,147,58,0.12) 0%, transparent 65%),
+    linear-gradient(180deg, #0e1208 0%, #0d0c09 100%);
+}
+.shop-card-body { padding: 32px 28px; }
+.shop-card-series {
+  font-family: var(--mono); font-size: .65rem;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+}
+.shop-card-name {
+  font-family: var(--serif); font-size: 1.5rem;
+  margin-bottom: 14px;
+}
+.shop-card-desc {
+  font-size: .83rem; color: var(--text-2);
+  line-height: 1.7; margin-bottom: 24px;
+}
+.shop-card-feats {
+  list-style: none; margin-bottom: 28px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.shop-card-feats li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: .82rem; color: var(--text-2);
+}
+.shop-card-feats li::before {
+  content: ''; width: 16px; height: 1px;
+  background: var(--gold); flex-shrink: 0;
+}
+.shop-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 28px;
+  border-top: 1px solid var(--border);
+}
+.shop-price {
+  font-family: var(--serif); font-size: 1.8rem;
+}
+.shop-price-note { font-size: .72rem; color: var(--text-3); }
+.shop-btn {
+  font-size: .76rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 12px 22px; border-radius: 2px;
+  transition: transform .3s var(--ease), box-shadow .3s, background .3s, color .3s;
+}
+.shop-btn-primary {
+  background: var(--gold); color: var(--bg-0);
+}
+.shop-btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(200,147,58,0.3);
+}
+.shop-btn-outline {
+  border: 1px solid var(--border);
+  color: var(--text-1);
+}
+.shop-btn-outline:hover {
+  border-color: var(--gold);
+  background: var(--glass-warm);
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+#faq {
+  padding: var(--pad) 0;
+  background: var(--bg-1);
+}
+.faq-list {
+  max-width: 760px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.faq-item {
+  background: var(--bg-1);
+}
+.faq-question {
+  width: 100%; text-align: left;
+  padding: 26px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  font-size: .95rem; font-weight: 400; color: var(--text-1);
+  transition: color .3s, background .3s;
+}
+.faq-question:hover { background: var(--bg-2); }
+.faq-question.open { color: var(--gold); }
+.faq-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; color: var(--text-3);
+  transition: transform .4s var(--ease), border-color .3s, color .3s, background .3s;
+}
+.faq-question.open .faq-icon {
+  transform: rotate(45deg);
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(200,147,58,0.08);
+}
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height .5s var(--ease);
+}
+.faq-answer-inner {
+  padding: 0 32px 28px;
+  font-size: .88rem; color: var(--text-2); line-height: 1.85;
+}
+
+/* ============================================================
+   CTA SECTION
+   ============================================================ */
+#cta {
+  padding: var(--pad) 0;
+  background: var(--bg-0);
+  position: relative; overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,107,53,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 30% 20%, rgba(200,147,58,0.08) 0%, transparent 60%);
+  animation: ctaBgPulse 10s ease-in-out infinite alternate;
+}
+@keyframes ctaBgPulse {
+  0%   { opacity: .6; }
+  100% { opacity: 1; }
+}
+.cta-inner {
+  position: relative; z-index: 1;
+  text-align: center;
+  width: var(--w); margin: 0 auto;
+}
+.cta-title {
+  font-size: clamp(2.8rem,6vw,5.5rem);
+  margin-bottom: 24px; line-height: 1.05;
+}
+.cta-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--heat));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cta-sub {
+  font-size: clamp(.9rem,1.4vw,1.1rem);
+  color: var(--text-2); max-width: 480px; margin: 0 auto 48px;
+  line-height: 1.8;
+}
+.cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.cta-note {
+  margin-top: 28px;
+  font-family: var(--mono); font-size: .68rem;
+  letter-spacing: .12em; color: var(--text-3);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+}
+.footer-main {
+  width: var(--w); margin: 0 auto;
+  padding: 80px 0 60px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand {}
+.footer-logo {
+  font-family: var(--serif); font-size: 1.3rem;
+  font-weight: 600; letter-spacing: .08em;
+  margin-bottom: 16px;
+}
+.footer-logo span { color: var(--gold); }
+.footer-tagline {
+  font-size: .85rem; color: var(--text-3);
+  line-height: 1.7; max-width: 260px; margin-bottom: 28px;
+}
+.footer-social { display: flex; gap: 12px; }
+.footer-social-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); font-size: .8rem;
+  transition: border-color .3s, color .3s, background .3s;
+}
+.footer-social-btn:hover {
+  border-color: var(--gold); color: var(--gold);
+  background: var(--glass-warm);
+}
+.footer-col-title {
+  font-family: var(--mono); font-size: .68rem;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 20px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a {
+  font-size: .85rem; color: var(--text-2);
+  transition: color .3s; display: inline-block;
+}
+.footer-links a:hover { color: var(--gold); transform: translateX(4px); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  width: var(--w); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom-left {
+  font-family: var(--mono); font-size: .68rem;
+  letter-spacing: .1em; color: var(--text-3);
+}
+.footer-bottom-right {
+  display: flex; gap: 24px;
+}
+.footer-bottom-right a {
+  font-family: var(--mono); font-size: .68rem;
+  letter-spacing: .1em; color: var(--text-3);
+  transition: color .3s;
+}
+.footer-bottom-right a:hover { color: var(--gold); }
+
+/* ============================================================
+   DIVIDER / AMBIENT LINES
+   ============================================================ */
+.section-line {
+  width: var(--w); margin: 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .benefits-grid { grid-template-columns: repeat(2,1fr); }
+  .product-layout { grid-template-columns: 1fr; }
+  .science-layout { grid-template-columns: 1fr; }
+  .shop-grid { grid-template-columns: repeat(2,1fr); }
+  .footer-main { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --pad: clamp(56px,10vw,80px); }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .stats-inner { grid-template-columns: repeat(2,1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .how-steps { grid-template-columns: 1fr; }
+  .feature-row { grid-template-columns: 40px 1fr; }
+  .feature-row-meta { display: none; }
+  .feature-row-num { padding: 24px 16px; font-size: .6rem; }
+  .lifestyle-grid { grid-template-columns: 1fr; }
+  .lc-3 { grid-column: 1; }
+  .testimonials-track .testimonial-card { flex: 0 0 calc(100% - 16px); }
+  .shop-grid { grid-template-columns: 1fr; }
+  .science-cards { grid-template-columns: 1fr; }
+  .footer-main { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 16px; }
+  .product-specs { grid-template-columns: 1fr; }
+  #cursor-dot, #cursor-ring { display: none; }
+  body { cursor: auto; }
+  button, a { cursor: pointer; }
+}
+@media (max-width: 480px) {
+  .benefits-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- Mobile Nav -->
+<div id="mobile-nav">
+  <a href="#benefits">Benefits</a>
+  <a href="#product">The Sauna</a>
+  <a href="#science">Science</a>
+  <a href="#shop">Shop</a>
+  <a href="#faq">FAQ</a>
+</div>
+
+<!-- Navigation -->
+<nav id="nav">
+  <div class="nav-logo">IGN<span>I</span>S</div>
+  <ul class="nav-links">
+    <li><a href="#benefits">Benefits</a></li>
+    <li><a href="#product">The Sauna</a></li>
+    <li><a href="#science">Science</a></li>
+    <li><a href="#shop">Collections</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="#shop" class="nav-cta">Shop Now</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-gradient"></div>
+  <div class="hero-parallax-1">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+  </div>
+  <div class="hero-content" id="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span class="label">Luxury Infrared Sauna</span>
+      <div class="hero-eyebrow-line"></div>
+    </div>
+    <h1 class="h-display hero-title">
+      The Art of<br><em>Sacred Heat</em>
+    </h1>
+    <p class="hero-sub">
+      Engineered for those who demand more — from their recovery, their rituals, and their space.
+    </p>
+    <div class="hero-actions">
+      <a href="#shop" class="btn-primary">
+        <span>Explore Collections</span>
+        <span class="btn-icon">→</span>
+      </a>
+      <a href="#science" class="btn-secondary">
+        <span class="btn-icon">▷</span>
+        <span>The Science</span>
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="hero-scroll-label">Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <!-- duplicated for seamless loop -->
+    <span class="ticker-item"><span class="ticker-dot"></span>Full Spectrum Infrared</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Premium Cedar Construction</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Smart Heat Control</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Chromotherapy Lighting</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Medical-Grade Technology</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Hand-Crafted in Nordic Tradition</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>ISO Certified</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>5-Year Warranty</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Full Spectrum Infrared</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Premium Cedar Construction</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Smart Heat Control</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Chromotherapy Lighting</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Medical-Grade Technology</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Hand-Crafted in Nordic Tradition</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>ISO Certified</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>5-Year Warranty</span>
+  </div>
+</div>
+
+<!-- Stats -->
+<section class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-num"><span class="stat-count" data-target="50">0</span><span class="stat-suffix">K+</span></div>
+      <div class="stat-label">Sessions Completed</div>
+    </div>
+    <div class="stat-item reveal delay-1">
+      <div class="stat-num"><span class="stat-count" data-target="98">0</span><span class="stat-suffix">%</span></div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat-item reveal delay-2">
+      <div class="stat-num"><span class="stat-count" data-target="12">0</span><span class="stat-suffix">+</span></div>
+      <div class="stat-label">Years Perfecting Heat</div>
+    </div>
+    <div class="stat-item reveal delay-3">
+      <div class="stat-num"><span class="stat-count" data-target="40">0</span><span class="stat-suffix">+</span></div>
+      <div class="stat-label">Clinical Studies Support</div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits -->
+<section id="benefits">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Why IGNIS</span>
+      <h2 class="h-section section-title reveal delay-1">Heat that transforms,<br><em style="font-style:italic;color:var(--gold)">heals</em>, and elevates.</h2>
+      <p class="section-sub reveal delay-2">Every session is engineered to go deeper — at the cellular, muscular, and mental level.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card reveal">
+        <span class="benefit-num">01</span>
+        <div class="benefit-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="18" stroke="#c8933a" stroke-width="1.2" opacity=".3"/>
+            <circle cx="24" cy="24" r="10" stroke="#c8933a" stroke-width="1.2"/>
+            <path d="M24 14 C24 14 20 18 20 24 C20 30 24 34 24 34 C24 34 28 30 28 24 C28 18 24 14 24 14Z" stroke="#ff6b35" stroke-width="1.2" fill="none"/>
+            <circle cx="24" cy="24" r="2.5" fill="#c8933a"/>
+          </svg>
+        </div>
+        <div class="benefit-title">Deep Muscle Recovery</div>
+        <div class="benefit-desc">Infrared heat penetrates 4–5cm into muscle tissue — releasing tension, reducing DOMS, and accelerating repair at a cellular level.</div>
+      </div>
+      <div class="benefit-card reveal delay-1">
+        <span class="benefit-num">02</span>
+        <div class="benefit-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="16" width="32" height="20" rx="2" stroke="#c8933a" stroke-width="1.2"/>
+            <path d="M16 16V12C16 9.79 17.79 8 20 8H28C30.21 8 32 9.79 32 12V16" stroke="#c8933a" stroke-width="1.2"/>
+            <path d="M20 26 L22 28 L28 22" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="benefit-title">Cellular Detoxification</div>
+        <div class="benefit-desc">Sweat 7x more than a traditional sauna. Release heavy metals, BPA, and environmental toxins through deep pore-level perspiration.</div>
+      </div>
+      <div class="benefit-card reveal delay-2">
+        <span class="benefit-num">03</span>
+        <div class="benefit-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 6C24 6 12 18 12 28C12 34.63 17.37 40 24 40C30.63 40 36 34.63 36 28C36 18 24 6 24 6Z" stroke="#c8933a" stroke-width="1.2" fill="none"/>
+            <path d="M24 14C24 14 18 22 18 28C18 31.31 20.69 34 24 34" stroke="#ff6b35" stroke-width="1.2" fill="none" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="benefit-title">Mental Clarity & Calm</div>
+        <div class="benefit-desc">Sustained heat triggers endorphin release and parasympathetic activation — emerging calmer, sharper, and more centred after every session.</div>
+      </div>
+      <div class="benefit-card reveal delay-3">
+        <span class="benefit-num">04</span>
+        <div class="benefit-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 8C15.16 8 8 15.16 8 24C8 32.84 15.16 40 24 40C32.84 40 40 32.84 40 24" stroke="#c8933a" stroke-width="1.2"/>
+            <path d="M32 8 Q38 14 40 22" stroke="#ff6b35" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="24" cy="24" r="6" stroke="#c8933a" stroke-width="1.2" opacity=".4"/>
+            <circle cx="24" cy="24" r="2" fill="#c8933a"/>
+          </svg>
+        </div>
+        <div class="benefit-title">Radiant Skin Renewal</div>
+        <div class="benefit-desc">Increased circulation and deep sweating flush impurities and deliver nutrients to the skin's surface — for a visible glow from within.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Product Showcase -->
+<section id="product" style="padding: var(--pad) 0;">
+  <div class="section-inner">
+    <div class="product-layout">
+      <div class="product-visual reveal-left">
+        <div class="product-visual-inner">
+          <div class="sauna-shape">
+            <div class="sauna-roof"></div>
+            <div class="sauna-body">
+              <div class="sauna-window"></div>
+              <div class="sauna-door">
+                <div class="sauna-door-glow"></div>
+              </div>
+            </div>
+            <div class="sauna-base"></div>
+          </div>
+          <div class="product-heat-line"></div>
+        </div>
+        <div class="product-visual-badge">
+          <div class="label">Temperature</div>
+          <div class="product-visual-badge-val">180°F / 82°C</div>
+        </div>
+      </div>
+      <div class="product-info reveal-right">
+        <span class="label" style="display:block;margin-bottom:20px;">IGNIS Pro Series</span>
+        <h2 class="h-section product-name">The Pro<br>Sanctuary</h2>
+        <div class="product-tagline">Your private heat retreat.</div>
+        <p class="product-desc">
+          The IGNIS Pro is not a sauna. It's a sanctuary — built with Canadian Western Red Cedar,
+          full-spectrum infrared heating panels, and a control system intelligent enough to remember
+          your perfect session. Crafted for those who refuse to compromise on recovery.
+        </p>
+        <div class="product-specs">
+          <div class="spec-item">
+            <div class="spec-label">Infrared Type</div>
+            <div class="spec-val">Full Spectrum (Near + Mid + Far)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Interior</div>
+            <div class="spec-val">Canadian Western Red Cedar</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Capacity</div>
+            <div class="spec-val">1–2 Person</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Heat-up Time</div>
+            <div class="spec-val">&lt; 15 Minutes</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">EMF Level</div>
+            <div class="spec-val">&lt; 2 mG (Ultra-Low)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Warranty</div>
+            <div class="spec-val">Lifetime on Structure</div>
+          </div>
+        </div>
+        <div class="product-price-row">
+          <div class="product-price">$4,999</div>
+          <div class="product-price-note">Free delivery + white glove installation</div>
+        </div>
+        <div class="product-actions">
+          <a href="#shop" class="btn-primary"><span>Order Now</span><span class="btn-icon">→</span></a>
+          <a href="#how" class="btn-secondary"><span>How It Works</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Engineering</span>
+      <h2 class="h-section section-title reveal delay-1">Built different.<br><em style="font-style:italic;color:var(--gold)">By design.</em></h2>
+    </div>
+    <div class="features-list">
+      <div class="feature-row reveal">
+        <div class="feature-row-num">01</div>
+        <div class="feature-row-content">
+          <div class="feature-row-title">Full Spectrum Infrared Technology</div>
+          <div class="feature-row-desc">Three wavelength types — Near, Mid, and Far infrared — working in concert to target the skin, muscle tissue, and cellular core simultaneously.</div>
+        </div>
+        <div class="feature-row-meta">
+          <span class="feature-tag">Near IR</span>
+          <span class="feature-tag">Mid IR</span>
+          <span class="feature-tag">Far IR</span>
+        </div>
+      </div>
+      <div class="feature-row reveal delay-1">
+        <div class="feature-row-num">02</div>
+        <div class="feature-row-content">
+          <div class="feature-row-title">Intelligent Thermal Control</div>
+          <div class="feature-row-desc">AI-assisted temperature learning remembers your preferred session profile. Pre-heat remotely via app. Precision ±1°F accuracy throughout your session.</div>
+        </div>
+        <div class="feature-row-meta">
+          <span class="feature-tag">App Control</span>
+          <span class="feature-tag">Smart Preheat</span>
+        </div>
+      </div>
+      <div class="feature-row reveal delay-2">
+        <div class="feature-row-num">03</div>
+        <div class="feature-row-content">
+          <div class="feature-row-title">Premium Cedar Construction</div>
+          <div class="feature-row-desc">Sustainably sourced Canadian Western Red Cedar. Naturally antimicrobial, hypoallergenic, and heat-stable. The same wood used in Nordic saunas for centuries.</div>
+        </div>
+        <div class="feature-row-meta">
+          <span class="feature-tag">Sustainably Sourced</span>
+          <span class="feature-tag">Nordic Grade</span>
+        </div>
+      </div>
+      <div class="feature-row reveal delay-3">
+        <div class="feature-row-num">04</div>
+        <div class="feature-row-content">
+          <div class="feature-row-title">Chromotherapy Ambience System</div>
+          <div class="feature-row-desc">7-color LED chromotherapy embedded throughout the cabin. Tuned to therapeutic light frequencies that complement each stage of your heat session.</div>
+        </div>
+        <div class="feature-row-meta">
+          <span class="feature-tag">7-Color LED</span>
+          <span class="feature-tag">Therapeutic</span>
+        </div>
+      </div>
+      <div class="feature-row reveal delay-4">
+        <div class="feature-row-num">05</div>
+        <div class="feature-row-content">
+          <div class="feature-row-title">Ultra-Low EMF Panels</div>
+          <div class="feature-row-desc">All heating panels tested below 2 milliGauss — the international safety standard is 1000 mG. Sleep soundly knowing your wellness practice is pure.</div>
+        </div>
+        <div class="feature-row-meta">
+          <span class="feature-tag">&lt;2 mG EMF</span>
+          <span class="feature-tag">ELF Certified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Science / Recovery -->
+<section id="science">
+  <div class="section-inner">
+    <div class="science-layout">
+      <div class="science-left">
+        <span class="label reveal" style="display:block;margin-bottom:20px;">The Science</span>
+        <h2 class="h-section section-title reveal delay-1" style="text-align:left;margin-bottom:0;">Backed by<br><em style="font-style:italic;color:var(--gold)">biology.</em></h2>
+        <div class="science-data-points">
+          <div class="data-point reveal" style="--pct:88%">
+            <div class="data-point-bar-wrap">
+              <div class="data-point-bar"><div class="data-point-bar-fill"></div></div>
+            </div>
+            <div class="data-point-info">
+              <div class="data-point-val">88<span class="unit">%</span></div>
+              <div class="data-point-desc">report reduced muscle soreness after 3 sessions</div>
+            </div>
+          </div>
+          <div class="data-point reveal delay-1" style="--pct:73%">
+            <div class="data-point-bar-wrap">
+              <div class="data-point-bar"><div class="data-point-bar-fill"></div></div>
+            </div>
+            <div class="data-point-info">
+              <div class="data-point-val">73<span class="unit">%</span></div>
+              <div class="data-point-desc">improvement in sleep quality reported over 30 days</div>
+            </div>
+          </div>
+          <div class="data-point reveal delay-2" style="--pct:95%">
+            <div class="data-point-bar-wrap">
+              <div class="data-point-bar"><div class="data-point-bar-fill"></div></div>
+            </div>
+            <div class="data-point-info">
+              <div class="data-point-val">7<span class="unit">x</span></div>
+              <div class="data-point-desc">more sweat output vs. traditional steam sauna</div>
+            </div>
+          </div>
+          <div class="data-point reveal delay-3" style="--pct:60%">
+            <div class="data-point-bar-wrap">
+              <div class="data-point-bar"><div class="data-point-bar-fill"></div></div>
+            </div>
+            <div class="data-point-info">
+              <div class="data-point-val">600<span class="unit">kcal</span></div>
+              <div class="data-point-desc">average calories burned in a 45-minute session</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="science-right">
+        <blockquote class="science-claim reveal">
+          "Consistent infrared sauna use may reduce cardiovascular risk by up to 27% — comparable to moderate aerobic exercise."
+        </blockquote>
+        <p style="font-size:.82rem;color:var(--text-3);font-family:var(--mono);letter-spacing:.08em;margin-bottom:40px;" class="reveal delay-1">— JAMA Internal Medicine, 2018 / Laukkanen et al.</p>
+        <div class="science-cards">
+          <div class="science-card reveal delay-1">
+            <div class="science-card-icon">🔥</div>
+            <div class="science-card-title">Heat Shock Proteins</div>
+            <div class="science-card-text">Upregulate cellular repair mechanisms and protect against stress-induced protein damage.</div>
+          </div>
+          <div class="science-card reveal delay-2">
+            <div class="science-card-icon">❤️</div>
+            <div class="science-card-title">Cardiovascular Health</div>
+            <div class="science-card-text">Passive heat exposure elevates heart rate comparably to low-intensity aerobic activity.</div>
+          </div>
+          <div class="science-card reveal delay-3">
+            <div class="science-card-icon">🧠</div>
+            <div class="science-card-title">BDNF & Neurogenesis</div>
+            <div class="science-card-text">Heat stress increases brain-derived neurotrophic factor — supporting memory and mood.</div>
+          </div>
+          <div class="science-card reveal delay-4">
+            <div class="science-card-icon">⚡</div>
+            <div class="science-card-title">Growth Hormone</div>
+            <div class="science-card-text">Two 20-min sessions with a 30-min break can increase GH levels 16-fold within 24 hours.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Process</span>
+      <h2 class="h-section section-title reveal delay-1">Your ritual,<br><em style="font-style:italic;color:var(--gold)">simplified.</em></h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal">
+        <div class="how-step-num">01</div>
+        <div class="how-step-title">Set Your Sanctuary</div>
+        <div class="how-step-desc">Open the IGNIS app or use the in-cabin control panel. Select your temperature, session duration, and chromotherapy mode. It pre-heats in under 15 minutes.</div>
+      </div>
+      <div class="how-step reveal delay-2">
+        <div class="how-step-num">02</div>
+        <div class="how-step-title">Enter &amp; Surrender</div>
+        <div class="how-step-desc">Step in. Close the door. Let the full-spectrum infrared waves work at the cellular level. Meditate, stretch, or simply exist in stillness.</div>
+      </div>
+      <div class="how-step reveal delay-4">
+        <div class="how-step-num">03</div>
+        <div class="how-step-title">Emerge Transformed</div>
+        <div class="how-step-desc">After 30–60 minutes, step out renewed. Muscles loose. Skin glowing. Mind clear. The world feels quieter after sacred heat.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lifestyle / Transformation -->
+<section id="lifestyle">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Transformation</span>
+      <h2 class="h-section section-title reveal delay-1">A practice,<br><em style="font-style:italic;color:var(--gold)">not a product.</em></h2>
+    </div>
+    <div class="lifestyle-grid">
+      <div class="lifestyle-cell lc-1 reveal-left" style="min-height:360px;">
+        <div class="lifestyle-cell-bg"></div>
+        <div class="lifestyle-cell-content">
+          <div class="lifestyle-cell-tag"><span class="label">Morning Protocol</span></div>
+          <h3 class="lifestyle-cell-title">Start before the world does.</h3>
+          <p class="lifestyle-cell-text">The 6am IGNIS session — before coffee, before screens — sets a physiological and mental baseline nothing else can replicate.</p>
+        </div>
+        <div class="lifestyle-border"></div>
+      </div>
+      <div class="lifestyle-cell lc-2 reveal-right" style="min-height:360px;">
+        <div class="lifestyle-cell-bg"></div>
+        <div class="lifestyle-cell-content">
+          <div class="lifestyle-cell-tag"><span class="label">Evening Wind-Down</span></div>
+          <h3 class="lifestyle-cell-title">The deepest sleep you've ever had.</h3>
+          <p class="lifestyle-cell-text">Post-sauna core temperature drop signals the body for profound, restorative sleep within 90 minutes of your session.</p>
+        </div>
+        <div class="lifestyle-border"></div>
+      </div>
+      <div class="lifestyle-cell lc-3 reveal" style="min-height:280px;">
+        <div class="lifestyle-cell-bg"></div>
+        <div class="lifestyle-cell-content">
+          <div class="lifestyle-cell-tag"><span class="label">The IGNIS Ritual</span></div>
+          <h3 class="lifestyle-cell-title">Athletes. Executives. Artists.<br>Those who perform at the edge use heat to stay there.</h3>
+          <p class="lifestyle-cell-text">IGNIS owners include Olympic athletes, Fortune 500 leaders, and creative directors who understand that peak output demands peak recovery.</p>
+        </div>
+        <div class="lifestyle-border"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Testimonials</span>
+      <h2 class="h-section section-title reveal delay-1">They felt it.<br><em style="font-style:italic;color:var(--gold)">Now they live by it.</em></h2>
+    </div>
+    <div class="testimonials-track-wrap">
+      <div class="testimonials-track" id="t-track">
+        <div class="testimonial-card reveal">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">I've tried cold plunges, cryotherapy, contrast therapy — nothing has changed my recovery and sleep like the IGNIS. It's become the non-negotiable part of my training week.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">MM</div>
+            <div>
+              <div class="testimonial-name">Marcus M.</div>
+              <div class="testimonial-role">Professional Triathlete</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal delay-1">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">The build quality is extraordinary. Every surface, every detail speaks to the craftsmanship. But more than how it looks — how I feel after each session is why I'd never give it up.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">SL</div>
+            <div>
+              <div class="testimonial-name">Sarah L.</div>
+              <div class="testimonial-role">Architect & Wellness Advocate</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal delay-2">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">I bought the IGNIS Pro for recovery after surgeries. Twelve weeks later, my physiotherapist asked what I'd changed. I told her — sacred heat, daily. She now owns one too.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">JR</div>
+            <div>
+              <div class="testimonial-name">James R.</div>
+              <div class="testimonial-role">Former NFL Linebacker</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">I resisted for years — thought it was a luxury, not a necessity. After 6 months with IGNIS, I can't imagine life without this ritual. My cortisol levels dropped 34% at my last bloodwork.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">AC</div>
+            <div>
+              <div class="testimonial-name">Anya C.</div>
+              <div class="testimonial-role">CEO, Health Tech Startup</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">The chromotherapy alone is worth it. But when you combine the light, the heat, the cedar smell — it's a full sensory experience. My guests ask about it every single time.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">DB</div>
+            <div>
+              <div class="testimonial-name">David B.</div>
+              <div class="testimonial-role">Interior Designer</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">Setup was seamless — white glove team had it installed in 4 hours. The app is intuitive. Within 3 days of use I noticed my anxiety had dropped significantly. This is medicine.</p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">KW</div>
+            <div>
+              <div class="testimonial-name">Kira W.</div>
+              <div class="testimonial-role">Functional Medicine Physician</div>
+            </div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials-nav">
+      <button class="t-nav-btn" id="t-prev">←</button>
+      <div class="t-nav-dots" id="t-dots"></div>
+      <button class="t-nav-btn" id="t-next">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- Shop / Purchase -->
+<section id="shop">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">Collections</span>
+      <h2 class="h-section section-title reveal delay-1">Find your<br><em style="font-style:italic;color:var(--gold)">perfect sanctuary.</em></h2>
+      <p class="section-sub reveal delay-2">Three distinct models. One philosophy: heat without compromise.</p>
+    </div>
+    <div class="shop-grid">
+      <div class="shop-card reveal delay-1">
+        <div class="shop-card-visual sc-visual-1">
+          <div style="font-family:var(--serif);font-size:1.1rem;color:var(--text-2);letter-spacing:.06em;">Solo</div>
+        </div>
+        <div class="shop-card-body">
+          <div class="shop-card-series">IGNIS Series</div>
+          <div class="shop-card-name">The Solo</div>
+          <div class="shop-card-desc">Precision-engineered for the individual ritual. Compact, powerful, and uncompromising in its use of space.</div>
+          <ul class="shop-card-feats">
+            <li>1-Person Capacity</li>
+            <li>Full Spectrum Infrared (3 panels)</li>
+            <li>Bluetooth Audio Integration</li>
+            <li>3-Color Chromotherapy</li>
+            <li>IGNIS App Compatible</li>
+          </ul>
+        </div>
+        <div class="shop-card-footer">
+          <div>
+            <div class="shop-price">$2,999</div>
+            <div class="shop-price-note">Free Shipping</div>
+          </div>
+          <button class="shop-btn shop-btn-outline">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="shop-card featured reveal delay-2">
+        <div class="shop-card-badge">Most Popular</div>
+        <div class="shop-card-visual sc-visual-2">
+          <div style="font-family:var(--serif);font-size:1.1rem;color:var(--text-2);letter-spacing:.06em;">Pro</div>
+        </div>
+        <div class="shop-card-body">
+          <div class="shop-card-series">IGNIS Pro Series</div>
+          <div class="shop-card-name">The Pro</div>
+          <div class="shop-card-desc">The flagship model. Where performance engineering meets artisan craftsmanship. The definitive IGNIS experience.</div>
+          <ul class="shop-card-feats">
+            <li>1–2 Person Capacity</li>
+            <li>Full Spectrum Infrared (6 panels)</li>
+            <li>Premium Sound System</li>
+            <li>7-Color Chromotherapy</li>
+            <li>Smart App + Voice Control</li>
+            <li>Lifetime Structure Warranty</li>
+          </ul>
+        </div>
+        <div class="shop-card-footer">
+          <div>
+            <div class="shop-price">$4,999</div>
+            <div class="shop-price-note">White Glove Installation</div>
+          </div>
+          <button class="shop-btn shop-btn-primary">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="shop-card reveal delay-3">
+        <div class="shop-card-visual sc-visual-3">
+          <div style="font-family:var(--serif);font-size:1.1rem;color:var(--text-2);letter-spacing:.06em;">Sanctuary</div>
+        </div>
+        <div class="shop-card-body">
+          <div class="shop-card-series">IGNIS Elite Series</div>
+          <div class="shop-card-name">The Sanctuary</div>
+          <div class="shop-card-desc">The ultimate expression of IGNIS. A full retreat experience for those who share their practice with those they love.</div>
+          <ul class="shop-card-feats">
+            <li>2–4 Person Capacity</li>
+            <li>Full Spectrum Infrared (9 panels)</li>
+            <li>Harman Kardon Audio</li>
+            <li>Therapeutic Chromotherapy Suite</li>
+            <li>IGNIS AI Session Advisor</li>
+            <li>Custom Cedar Engraving</li>
+          </ul>
+        </div>
+        <div class="shop-card-footer">
+          <div>
+            <div class="shop-price">$7,999</div>
+            <div class="shop-price-note">Concierge Installation</div>
+          </div>
+          <button class="shop-btn shop-btn-outline">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label reveal">FAQ</span>
+      <h2 class="h-section section-title reveal delay-1">Everything you<br><em style="font-style:italic;color:var(--gold)">need to know.</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>How is infrared different from a traditional sauna?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Traditional saunas heat the air around you to 180–220°F. Infrared saunas heat your body directly using light waves, operating at a more comfortable 110–150°F — yet penetrating 4–5cm into tissue for deeper therapeutic benefit. You sweat more, recover faster, and experience longer sessions without discomfort.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What is full spectrum infrared, and why does it matter?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Full spectrum means IGNIS emits Near, Mid, and Far infrared wavelengths simultaneously. Near IR (700–1400nm) penetrates the skin surface for collagen and wound healing. Mid IR (1.4–3μm) targets muscle tissue. Far IR (3–1000μm) goes deepest — reaching organs and triggering detoxification. Most budget saunas only use Far IR. IGNIS uses all three.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>How much does it cost to run?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">The IGNIS Pro draws approximately 1.7kW and typically runs 45–60 minute sessions. At average US electricity rates (~$0.14/kWh), a daily session costs roughly $0.16–$0.22 — less than a cup of coffee. The IGNIS Solo draws even less at 1.1kW.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What does installation involve?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">All IGNIS models require a standard 120V (Solo) or 240V (Pro/Sanctuary) outlet — no special plumbing or ventilation needed. Our white glove team delivers, assembles, and tests your unit in your home. Most installations are complete in 3–5 hours. We leave only when you're completely satisfied.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Is it safe to use daily?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes. Daily use at 30–45 minutes is the protocol used in most of the clinical studies supporting infrared's benefits. We recommend staying well-hydrated before and after sessions. Consult your physician if pregnant or managing specific cardiovascular conditions. Most healthy adults benefit from daily or near-daily sessions.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What warranty comes with IGNIS?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">The IGNIS Pro and Sanctuary come with a Lifetime Structural Warranty on all wood components, 5-year warranty on heaters and electronics, and 2-year comprehensive warranty covering parts and labour. The Solo carries a 5-year structural and 3-year electronics warranty. All models include dedicated lifetime customer support.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <span class="label reveal" style="display:block;margin-bottom:24px;">Begin Your Practice</span>
+    <h2 class="h-display cta-title reveal delay-1">
+      Heat. Elevated.<br><em>Start today.</em>
+    </h2>
+    <p class="cta-sub reveal delay-2">
+      Free shipping. White glove installation. 30-day in-home trial — return it for any reason, no questions asked.
+    </p>
+    <div class="cta-actions reveal delay-3">
+      <a href="#shop" class="btn-primary"><span>Shop Collections</span><span class="btn-icon">→</span></a>
+      <a href="#" class="btn-secondary"><span>Book a Consultation</span></a>
+    </div>
+    <p class="cta-note reveal delay-4">Free delivery · White glove setup · 30-day trial · Lifetime support</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-brand">
+      <div class="footer-logo">IGN<span>I</span>S</div>
+      <p class="footer-tagline">Precision-engineered luxury infrared saunas for those who demand more from their recovery.</p>
+      <div class="footer-social">
+        <a href="#" class="footer-social-btn" aria-label="Instagram">IG</a>
+        <a href="#" class="footer-social-btn" aria-label="Twitter">TW</a>
+        <a href="#" class="footer-social-btn" aria-label="YouTube">YT</a>
+        <a href="#" class="footer-social-btn" aria-label="Pinterest">PT</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#shop">IGNIS Solo</a></li>
+        <li><a href="#shop">IGNIS Pro</a></li>
+        <li><a href="#shop">IGNIS Sanctuary</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#science">The Science</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Installation</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-left">© 2026 IGNIS Sauna Co. — All rights reserved.</div>
+    <div class="footer-bottom-right">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Accessibility</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   CURSOR
+   ============================================================ */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let rx = 0, ry = 0, dx = 0, dy = 0;
+
+document.addEventListener('mousemove', e => {
+  dx = e.clientX; dy = e.clientY;
+  dot.style.left  = dx + 'px';
+  dot.style.top   = dy + 'px';
+});
+
+function animateRing() {
+  rx += (dx - rx) * 0.12;
+  ry += (dy - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a,button,.shop-card,.benefit-card,.testimonial-card').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-grow'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-grow'));
+});
+
+/* ============================================================
+   HERO CANVAS — Ember Particles
+   ============================================================ */
+const canvas  = document.getElementById('hero-canvas');
+const ctx     = canvas.getContext('2d');
+let particles = [];
+let W, H;
+
+function resize() {
+  W = canvas.width  = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x    = Math.random() * W;
+    this.y    = init ? Math.random() * H : H + 10;
+    this.r    = Math.random() * 2 + 0.5;
+    this.vx   = (Math.random() - 0.5) * 0.4;
+    this.vy   = -(Math.random() * 0.8 + 0.3);
+    this.life = 0;
+    this.maxL = Math.random() * 200 + 80;
+    const t   = Math.random();
+    this.hue  = t < 0.5 ? `rgba(255,107,53,` : `rgba(200,147,58,`;
+    this.wave = Math.random() * Math.PI * 2;
+    this.wFreq= Math.random() * 0.02 + 0.008;
+  }
+  update() {
+    this.life++;
+    this.wave += this.wFreq;
+    this.x += this.vx + Math.sin(this.wave) * 0.3;
+    this.y += this.vy;
+    if (this.life > this.maxL || this.y < -10) this.reset(false);
+  }
+  draw() {
+    const alpha = Math.min(this.life / 30, 1) * Math.max(0, 1 - (this.life - this.maxL * .7) / (this.maxL * .3));
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.hue + (alpha * 0.8) + ')';
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+function drawCanvas() {
+  ctx.clearRect(0, 0, W, H);
+
+  /* subtle heat shimmer gradient */
+  const grad = ctx.createRadialGradient(W/2, H*0.75, 0, W/2, H*0.75, W*0.6);
+  grad.addColorStop(0,   'rgba(255,107,53,0.06)');
+  grad.addColorStop(0.5, 'rgba(200,147,58,0.03)');
+  grad.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(drawCanvas);
+}
+drawCanvas();
+
+/* ============================================================
+   HERO PARALLAX — Mouse Reactive
+   ============================================================ */
+const heroContent = document.getElementById('hero-content');
+document.getElementById('hero').addEventListener('mousemove', e => {
+  const cx = window.innerWidth  / 2;
+  const cy = window.innerHeight / 2;
+  const ox = (e.clientX - cx) / cx;
+  const oy = (e.clientY - cy) / cy;
+  heroContent.style.transform = `translate(${ox * -10}px, ${oy * -6}px)`;
+
+  const orbs = document.querySelectorAll('.glow-orb');
+  orbs.forEach((o, i) => {
+    const depth = (i + 1) * 0.5;
+    o.style.transform = `translate(${ox * 20 * depth}px, ${oy * 12 * depth}px)`;
+  });
+});
+document.getElementById('hero').addEventListener('mouseleave', () => {
+  heroContent.style.transform = '';
+  document.querySelectorAll('.glow-orb').forEach(o => o.style.transform = '');
+});
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+const hamburger  = document.getElementById('hamburger');
+const mobileNav  = document.getElementById('mobile-nav');
+let menuOpen = false;
+
+hamburger.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  mobileNav.classList.toggle('open', menuOpen);
+  const spans = hamburger.querySelectorAll('span');
+  if (menuOpen) {
+    spans[0].style.transform = 'translateY(6px) rotate(45deg)';
+    spans[1].style.opacity   = '0';
+    spans[2].style.transform = 'translateY(-6px) rotate(-45deg)';
+  } else {
+    spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  }
+});
+
+mobileNav.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    menuOpen = false;
+    mobileNav.classList.remove('open');
+    hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  });
+});
+
+/* ============================================================
+   SCROLL REVEAL — Intersection Observer
+   ============================================================ */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      /* trigger data-bar fills */
+      if (e.target.classList.contains('data-point')) {
+        e.target.classList.add('visible');
+      }
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .data-point').forEach(el => {
+  revealObs.observe(el);
+});
+
+/* ============================================================
+   COUNTER ANIMATION
+   ============================================================ */
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el     = e.target;
+    const target = parseInt(el.dataset.target);
+    const dur    = 1800;
+    const start  = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(ease * target);
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-count').forEach(el => counterObs.observe(el));
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const answer  = btn.nextElementSibling;
+    const isOpen  = btn.classList.contains('open');
+
+    /* close all */
+    document.querySelectorAll('.faq-question.open').forEach(b => {
+      b.classList.remove('open');
+      b.nextElementSibling.style.maxHeight = '0';
+    });
+
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  });
+});
+
+/* ============================================================
+   TESTIMONIAL CAROUSEL
+   ============================================================ */
+const track   = document.getElementById('t-track');
+const cards   = track.querySelectorAll('.testimonial-card');
+const dotsWrap= document.getElementById('t-dots');
+let current   = 0;
+const perPage = window.innerWidth <= 768 ? 1 : 3;
+const total   = Math.ceil(cards.length / perPage);
+
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 't-dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => goTo(i));
+  dotsWrap.appendChild(d);
+}
+
+function goTo(idx) {
+  current = (idx + total) % total;
+  const card    = cards[0];
+  const cardW   = card.offsetWidth + 20;
+  track.style.transform = `translateX(-${current * perPage * cardW}px)`;
+  dotsWrap.querySelectorAll('.t-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+document.getElementById('t-prev').addEventListener('click', () => goTo(current - 1));
+document.getElementById('t-next').addEventListener('click', () => goTo(current + 1));
+
+/* ============================================================
+   3D CARD TILT
+   ============================================================ */
+function addTilt(selector) {
+  document.querySelectorAll(selector).forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r   = card.getBoundingClientRect();
+      const x   = (e.clientX - r.left) / r.width  - 0.5;
+      const y   = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 5}deg) translateY(-6px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+addTilt('.shop-card');
+addTilt('.science-card');
+
+/* ============================================================
+   SCROLL-BASED AMBIENT BACKGROUND SHIFT
+   ============================================================ */
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const pct = scrolled / maxScroll;
+
+  /* Shift body background subtly with scroll depth */
+  const r = Math.round(5 + pct * 3);
+  const g = Math.round(5 + pct * 2);
+  document.body.style.background = `rgb(${r},${r-1},${g-2})`;
+}, { passive: true });
+</script>
+</body>
+</html>
